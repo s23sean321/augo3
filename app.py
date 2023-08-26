@@ -10,8 +10,10 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,ImageSendMessage,StickerSendMessage,FollowEvent,UnfollowEvent,
 )
 from linebot.models import *
-from database import db_session,init_db
+from models.database import db_session,init_db
 from models.user import Users
+
+from models.product import Products
 
 app = Flask(__name__)
 
@@ -105,3 +107,31 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,TextSendMessage(text="HIHIHIHIIHHIIHHI")
         )
+
+
+#初始化產品資訊
+@app.before_first_request
+def init_products():
+    # init db
+    result = init_db()#先判斷資料庫有沒有建立，如果還沒建立就會進行下面的動作初始化產品
+    if result:
+        init_data = [Products(name='打拋雞肉',
+                              product_image_url='https://i.imgur.com/6Jrc4NX.jpg',
+                              price=100,
+                              description='爆香蒜及辣椒，加入碎雞肉拌炒，以小蕃茄及九層塔快拌輔味'),
+                     Products(name='黑胡椒豬肉',
+                              product_image_url='https://i.imgur.com/OO3EM1P.jpg',
+                              price=100,
+                              description='醬油醃製豬肉拌炒洋蔥，以黑胡椒粒提香增辣，豐富你味蕾的一刻'),
+                     Products(name='蔬菜套餐',
+                              price=80,
+                              product_image_url='https://i.imgur.com/zo59nEc.jpg',
+                              description='燙青菜、低油低鹽調味，清淡的一餐不造成任何負擔'),
+                     Products(name='松阪豬肉',
+                              price=130,
+                              product_image_url='https://i.imgur.com/LYZRbcR.jpg',
+                              description='使用氣炸鍋將肉質自身油脂逼出，原味、天然、就是這樣有嚼勁')]
+        db_session.bulk_save_objects(init_data)#透過這個方法一次儲存list中的產品
+        db_session.commit()#最後commit()才會存進資料庫
+        #記得要from models.product import Products在app.py
+        
