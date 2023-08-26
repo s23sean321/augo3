@@ -18,6 +18,6 @@ def init_db():
     if database_exists(db_path):
         return False
     else:
-        Base.metadate.create_all(engine)
+        Base.metadata.create_all(engine)
         return(True)
 
