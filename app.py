@@ -88,25 +88,29 @@ def callback():
 
     return 'OK'
 	
-if __name__ == "__main__":
-    init_db()
-    app.run()
+
 
 
 @handler.add(MessageEvent,message=TextMessage)
 def handle_message(event):
 
     get_or_create_user(event.source.user_id)
-    profile = line_bot_api.get_profile(event.source.user_id)
-    uid=profile.user_id
+
+
     message_text = str(event.message.text).lower()
 
     if message_text == '@使用說明':
         about_us_event(event)
-
+    elif message_text == '我想訂購商品':
+        message = Products.list_all()
+    if message:
         line_bot_api.reply_message(
-            event.reply_token,TextSendMessage(text="HIHIHIHIIHHIIHHI")
+            event.reply_token,message
         )
+
+
+
+
 
 
 #初始化產品資訊
@@ -135,3 +139,7 @@ def init_products():
         db_session.commit()#最後commit()才會存進資料庫
         #記得要from models.product import Products在app.py
         
+
+if __name__ == "__main__":
+    init_products()
+    app.run()
