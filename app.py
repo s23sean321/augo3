@@ -104,10 +104,15 @@ def handle_message(event):
         about_us_event(event)
     elif message_text == '我想訂購商品':
         message = Products.list_all()
-    elif "I'd like to have:" in message_text:
-            product_name=message_text.split(',')[0]
-            num_item = message_text.rsplit(':')[1]
+#當user要訂購時就會執行這段程式
+    elif "i'd like to have" in message_text:
+
+            product_name = message_text.split(',')[0]#利用split(',')拆解並取得第[0]個位置的值
+            # 例如 Coffee,i'd like to have經過split(',')拆解並取得第[0]個位置後就是 Coffee
+            num_item = message_text.rsplit(':')[1]#同理產品就用(':')拆解取得第[1]個位置的值
+            #資料庫搜尋是否有這個產品名稱
             product = db_session.query(Products).filter(Products.name.ilike(product_name)).first()
+            #如果有這個產品名稱就會加入
             if product:
 
                 cart.add(product=product_name, num=num_item)
@@ -120,15 +125,18 @@ def handle_message(event):
                     ])
 
                 message = TemplateSendMessage(alt_text='anything else?', template=confirm_template)
-            else:
-                message = TextSendMessage(text= "Sorry ,We don't havev {}.".format(product_name))
-            print(cart.bucket())
-    elif message_text in ['my cart','cart',"that's it"]:
 
-        if cart.bucket():
-            message = cart.display()
+            else:
+                #如果沒有找到產品名稱就會回給用戶沒有這個產品
+                message = TextSendMessage(text="Sorry, We don't have {}.".format(product_name))
+
+            print(cart.bucket())
+    elif message_text in ['my cart', 'cart', "that's it"]:#當出現'my cart', 'cart', "that's it"時
+
+        if cart.bucket():#當購物車裡面有東西時
+            message = cart.display()#就會使用 display()顯示購物車內容
         else:
-            message =TextSendMessage(text='your cart is empty now')
+            message = TextSendMessage(text='Your cart is empty now.')
     if message:
         line_bot_api.reply_message(
             event.reply_token,message
