@@ -17,7 +17,7 @@ class Orders(Base):
     user_id = Column("user_id",ForeignKey("user.id"))
     items = relationship('Items',backref="order")
 
-def display_receipt(self):
+    def display_receipt(self):
         item_box_component = []
 
         for item in self.items:#透過self.items取得訂單明細項目

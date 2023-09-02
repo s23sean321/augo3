@@ -109,7 +109,7 @@ def handle_message(event):
 
     if message_text == '@使用說明':
         about_us_event(event)
-    elif message_text in ['我想訂購商品',"add"]:
+    elif message_text in ['我想訂購商品', "add"]:
         message = Products.list_all()
 #當user要訂購時就會執行這段程式
     elif "i'd like to have" in message_text:
@@ -224,6 +224,7 @@ def handle_postback(event):
         line_bot_api.reply_message(event.reply_token, [message])
 
     return 'OK'
+
 @app.route("/confirm")
 def confirm():
     transaction_id = request.args.get('transactionId')
