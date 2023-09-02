@@ -191,7 +191,7 @@ def handle_postback(event):
         #建立LinePay的物件
         line_pay = LinePay()
         #再使用line_pay.pay的方法，最後就會回覆像postman的格式
-        info = line_pay.pay(product_name='始午餐始',
+        info = line_pay.pay(product_name='LSTORE',
                             amount=total,
                             order_id=order_id,
                             product_image_url=Config.STORE_IMAGE_URL)
